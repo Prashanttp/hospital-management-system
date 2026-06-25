@@ -25,10 +25,12 @@ public class WebSecurityConfig {
                 .sessionManagement(sessionConfig ->
                         sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth->auth
+                    .requestMatchers("/", "/index.html", "/css/**", "/js/**", "/assets/**", "/favicon.ico").permitAll()
                     .requestMatchers("/public/**" , "/auth/**", "/error").permitAll()
-//                    .requestMatchers("/admin/**").hasRole("ADMIN")
-//                    .requestMatchers("/doctore/**").hasAnyRole("DOCTOR" , "ADMIN")
-                                .anyRequest().authenticated()
+                    .requestMatchers("/admin/**").hasRole("ADMIN")
+                    .requestMatchers("/doctors/**").hasAnyRole("DOCTOR" , "ADMIN")
+                    .requestMatchers("/patients/**").hasAnyRole("PATIENT", "ADMIN")
+                    .anyRequest().authenticated()
                 )
 
                 .addFilterBefore(jwtAuthFilter , UsernamePasswordAuthenticationFilter.class);

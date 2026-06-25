@@ -1,9 +1,9 @@
 package com.learning.project.hospitalManagement.entity;
 
 import jakarta.persistence.*;
-import jakarta.transaction.UserTransaction;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Table(
-        name = "app_user "
+        name = "app_user"
 )
 public class User implements UserDetails {
 
@@ -24,16 +24,18 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JoinColumn(nullable = false , unique = true )
+    @Column(nullable = false, unique = true)
     private String username;
 
-    @JoinColumn(nullable = false)
+    @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
+    private String role; // e.g., "ROLE_PATIENT", "ROLE_DOCTOR", "ROLE_ADMIN"
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return List.of(new SimpleGrantedAuthority(role));
     }
 
 }

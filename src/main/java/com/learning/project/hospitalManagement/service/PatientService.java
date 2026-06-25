@@ -28,6 +28,13 @@ public class PatientService {
         return modelMapper.map(patient, PatientResponseDto.class);
     }
 
+    @Transactional
+    public PatientResponseDto getPatientByEmail(String email) {
+        Patient patient = patientRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("Patient Not " +
+                "Found with email: " + email));
+        return modelMapper.map(patient, PatientResponseDto.class);
+    }
+
     public List<PatientResponseDto> getAllPatients(Integer pageNumber, Integer pageSize) {
         return patientRepository.findAllPatients(PageRequest.of(pageNumber, pageSize))
                 .stream()

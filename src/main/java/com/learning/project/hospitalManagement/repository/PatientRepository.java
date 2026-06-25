@@ -13,9 +13,12 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface PatientRepository extends JpaRepository<Patient, Long> {
     Patient findByName(String name);
+
+    Optional<Patient> findByEmail(String email);
 
     List<Patient> findByBirthDateOrEmail(LocalDate birthDate, String email);
 
@@ -23,7 +26,7 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
 
     List<Patient> findByNameContainingOrderByIdDesc(String query);
 
-    @Query("SELECT p FROM Patient p where p.bloodGroup = ?1")
+    @Query("SELECT p FROM Patient p where p.bloodGroup = :bloodGroup")
     List<Patient> findByBloodGroup(@Param("bloodGroup") BloodGroupType bloodGroup);
 
     @Query("select p from Patient p where p.birthDate > :birthDate")
@@ -34,7 +37,7 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
 //    List<Object[]> countEachBloodGroupType();
     List<BloodGroupCountResponseEntity> countEachBloodGroupType();
 
-    @Query(value = "select * from patient", nativeQuery = true)
+    @Query("select p from Patient p")
     Page<Patient> findAllPatients(Pageable pageable);
 
     @Transactional

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hospital Management Dashboard</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Background effects -->
+  <div class="bg-glow-1"></div>
+  <div class="bg-glow-2"></div>
+
+  <!-- AUTH SECTION -->
+  <section id="auth-section" class="auth-container">
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="auth-logo">🏥</div>
+        <h1 id="auth-title">Welcome Back</h1>
+        <p id="auth-subtitle">Login to access your Hospital Dashboard</p>
+      </div>
+
+      <!-- Login Form -->
+      <form id="login-form">
+        <div class="form-group">
+          <label for="login-username">Username / Email</label>
+          <input type="text" id="login-username" placeholder="e.g. aarav.sharma@example.com" required>
+        </div>
+        <div class="form-group">
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+        <p class="auth-switch">Don't have an account? <a href="#" id="to-signup">Sign up as a Patient</a></p>
+      </form>
+
+      <!-- Signup Form (Hidden initially) -->
+      <form id="signup-form" class="hidden">
+        <div class="form-group">
+          <label for="signup-username">Username (Email)</label>
+          <input type="email" id="signup-username" placeholder="patient@example.com" required>
+        </div>
+        <div class="form-group">
+          <label for="signup-password">Password</label>
+          <input type="password" id="signup-password" placeholder="••••••••" required>
+        </div>
+        <hr class="form-divider">
+        <div class="form-group">
+          <label for="patient-name">Full Name</label>
+          <input type="text" id="patient-name" placeholder="John Doe" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group col">
+            <label for="patient-gender">Gender</label>
+            <select id="patient-gender" required>
+              <option value="MALE">Male</option>
+              <option value="FEMALE">Female</option>
+              <option value="OTHER">Other</option>
+            </select>
+          </div>
+          <div class="form-group col">
+            <label for="patient-bloodgroup">Blood Group</label>
+            <select id="patient-bloodgroup" required>
+              <option value="A_POSITIVE">A+</option>
+              <option value="A_NEGATIVE">A-</option>
+              <option value="B_POSITIVE">B+</option>
+              <option value="B_NEGATIVE">B-</option>
+              <option value="AB_POSITIVE">AB+</option>
+              <option value="AB_NEGATIVE">AB-</option>
+              <option value="O_POSITIVE">O+</option>
+              <option value="O_NEGATIVE">O-</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="patient-dob">Date of Birth</label>
+          <input type="date" id="patient-dob" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Register Profile</button>
+        <p class="auth-switch">Already have an account? <a href="#" id="to-login">Sign In</a></p>
+      </form>
+      
+      <div id="auth-alert" class="alert hidden"></div>
+      
+      <div class="demo-credentials">
+        <p><strong>💡 Quick Demo Access (Password: <code>password123</code>):</strong></p>
+        <ul>
+          <li>Admin: <code>admin@example.com</code></li>
+          <li>Doctor: <code>rakesh.mehta@example.com</code></li>
+          <li>Patient: <code>aarav.sharma@example.com</code></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- DASHBOARD SECTION -->
+  <section id="dashboard-section" class="dashboard-container hidden">
+    <!-- Sidebar / Nav Header -->
+    <header class="dashboard-header">
+      <div class="brand">
+        <span class="brand-logo">🏥</span>
+        <div class="brand-text">
+          <h2>CareSync</h2>
+          <p>Hospital Management System</p>
+        </div>
+      </div>
+      <div class="user-profile-summary">
+        <div class="user-avatar" id="user-avatar">U</div>
+        <div class="user-info">
+          <span class="user-name" id="profile-name">Loading...</span>
+          <span class="user-role" id="profile-role-badge">PATIENT</span>
+        </div>
+        <button id="logout-btn" class="btn btn-secondary btn-sm">Logout</button>
+      </div>
+    </header>
+
+    <main class="dashboard-main">
+      <div id="dashboard-alert" class="alert hidden"></div>
+
+      <!-- ================= PATIENT VIEW ================= -->
+      <div id="panel-patient" class="role-panel hidden">
+        <div class="panel-grid">
+          <!-- Profile Card -->
+          <div class="card card-profile">
+            <h3 class="card-title">My Health Profile</h3>
+            <div class="profile-details-list">
+              <div class="profile-item">
+                <span class="lbl">Email</span>
+                <span class="val" id="p-email">-</span>
+              </div>
+              <div class="profile-item">
+                <span class="lbl">Gender</span>
+                <span class="val" id="p-gender">-</span>
+              </div>
+              <div class="profile-item">
+                <span class="lbl">Birth Date</span>
+                <span class="val" id="p-dob">-</span>
+              </div>
+              <div class="profile-item">
+                <span class="lbl">Blood Group</span>
+                <span class="val tag tag-blood" id="p-blood">-</span>
+              </div>
+            </div>
+
+            <!-- Insurance Sub-Card -->
+            <div class="sub-card-insurance">
+              <h4 class="sub-title">🛡️ Insurance Details</h4>
+              <div id="insurance-view">
+                <div class="profile-item">
+                  <span class="lbl">Provider</span>
+                  <span class="val" id="ins-provider">None</span>
+                </div>
+                <div class="profile-item">
+                  <span class="lbl">Policy Number</span>
+                  <span class="val" id="ins-policy">None</span>
+                </div>
+                <div class="profile-item">
+                  <span class="lbl">Valid Until</span>
+                  <span class="val" id="ins-valid">None</span>
+                </div>
+              </div>
+              
+              <!-- Update Insurance Form -->
+              <button id="toggle-insurance-form-btn" class="btn btn-secondary btn-sm btn-block mt-3">Assign / Update Insurance</button>
+              
+              <form id="insurance-form" class="hidden mt-3">
+                <div class="form-group">
+                  <label for="ins-form-provider">Provider Name</label>
+                  <input type="text" id="ins-form-provider" placeholder="HDFC Ergo" required>
+                </div>
+                <div class="form-group">
+                  <label for="ins-form-policy">Policy Number</label>
+                  <input type="text" id="ins-form-policy" placeholder="POL-998877" required>
+                </div>
+                <div class="form-group">
+                  <label for="ins-form-valid">Valid Until</label>
+                  <input type="date" id="ins-form-valid" required>
+                </div>
+                <div class="form-row mt-2">
+                  <button type="submit" class="btn btn-primary btn-sm col mr-2">Save</button>
+                  <button type="button" id="cancel-insurance-btn" class="btn btn-secondary btn-sm col">Cancel</button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Appointments Card -->
+          <div class="card card-appointments">
+            <div class="card-header-actions">
+              <h3 class="card-title">My Scheduled Appointments</h3>
+              <button id="open-appointment-modal-btn" class="btn btn-primary btn-sm">+ Book Appointment</button>
+            </div>
+            
+            <div class="appointments-list" id="patient-appointments-list">
+              <p class="empty-state">No appointments scheduled.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Appointment Booking Section (Initially Collapsed) -->
+        <div id="appointment-modal" class="modal hidden">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3>Schedule New Appointment</h3>
+              <span class="close-modal" id="close-appointment-modal">&times;</span>
+            </div>
+            <form id="appointment-form">
+              <div class="form-group">
+                <label for="appt-doctor">Select Doctor</label>
+                <select id="appt-doctor" required>
+                  <option value="">Loading doctors...</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="appt-time">Appointment Date & Time</label>
+                <input type="datetime-local" id="appt-time" required>
+              </div>
+              <div class="form-group">
+                <label for="appt-reason">Reason for Visit</label>
+                <textarea id="appt-reason" rows="3" placeholder="Describe symptoms or reason..." required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">Schedule Appointment</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= DOCTOR VIEW ================= -->
+      <div id="panel-doctor" class="role-panel hidden">
+        <div class="card">
+          <h3 class="card-title">👨‍⚕️ My Patient Appointments</h3>
+          <div class="appointments-list" id="doctor-appointments-list">
+            <p class="empty-state">No appointments scheduled.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= ADMIN VIEW ================= -->
+      <div id="panel-admin" class="role-panel hidden">
+        <!-- Analytics Bar -->
+        <div class="analytics-grid">
+          <div class="analytics-card">
+            <span class="num" id="stat-patients">0</span>
+            <span class="label">Total Patients</span>
+          </div>
+          <div class="analytics-card">
+            <span class="num" id="stat-appointments">0</span>
+            <span class="label">Total Appointments</span>
+          </div>
+          <div class="analytics-card">
+            <span class="num" id="stat-doctors">0</span>
+            <span class="label">Active Doctors</span>
+          </div>
+        </div>
+
+        <div class="panel-grid-admin">
+          <!-- Patients Database -->
+          <div class="card card-table">
+            <h3 class="card-title">Patient Database</h3>
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Gender</th>
+                    <th>DOB</th>
+                    <th>Blood Group</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-patients-table-body">
+                  <tr>
+                    <td colspan="6" class="text-center">Loading patients list...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- Pagination -->
+            <div class="pagination">
+              <button id="prev-page-btn" class="btn btn-secondary btn-sm" disabled>&larr; Previous</button>
+              <span id="page-indicator">Page 1</span>
+              <button id="next-page-btn" class="btn btn-secondary btn-sm" disabled>Next &rarr;</button>
+            </div>
+          </div>
+
+          <!-- Blood Group Analytics -->
+          <div class="card card-analytics">
+            <h3 class="card-title">🩸 Blood Group Distribution</h3>
+            <div class="blood-list" id="blood-groups-list">
+              <p class="empty-state">Loading distribution data...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </section>
+
+  <!-- Script -->
+  <script src="js/app.js"></script>
+</body>
+</html>

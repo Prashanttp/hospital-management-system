@@ -12,6 +12,8 @@ import com.learning.project.hospitalManagement.service.InsuranceService;
 import com.learning.project.hospitalManagement.service.PatientService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import com.learning.project.hospitalManagement.entity.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,9 +39,8 @@ public class PatientController {
     }
 
     @GetMapping("/profile")
-    private ResponseEntity<PatientResponseDto> getPatientProfile() {
-        Long patientId = 4L;
-        return ResponseEntity.ok(patientService.getPatientById(patientId));
+    public ResponseEntity<PatientResponseDto> getPatientProfile(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(patientService.getPatientByEmail(user.getUsername()));
     }
 
     @GetMapping("/{id}")

@@ -37,9 +37,18 @@ public class AuthService {
         User user = userRepository.findByUsername(signupRequestDto.getUsername()).orElse(null) ;
         if (user!=null) throw new IllegalArgumentException("User Already Exist");
 
+        String username = signupRequestDto.getUsername();
+        String role = "ROLE_PATIENT";
+        if (username.startsWith("admin")) {
+            role = "ROLE_ADMIN";
+        } else if (username.startsWith("doctor") || username.equals("rakesh.mehta@example.com") || username.equals("sneha.kapoor@example.com") || username.equals("arjun.nair@example.com")) {
+            role = "ROLE_DOCTOR";
+        }
+
         user=userRepository.save(User.builder()
-                .username(signupRequestDto.getUsername())
+                .username(username)
                 .password(passwordEncoder.encode(signupRequestDto.getPassword()))
+                .role(role)
                 .build()
         );
 

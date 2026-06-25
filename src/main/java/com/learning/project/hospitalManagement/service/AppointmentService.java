@@ -68,4 +68,14 @@ public class AppointmentService {
                 .map(appointment -> modelMapper.map(appointment, AppointmentResponseDto.class))
                 .collect(Collectors.toList());
     }
+
+    public List<AppointmentResponseDto> getAllAppointmentsOfDoctorByEmail(String email) {
+        Doctor doctor = doctorRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("Doctor not found with email: " + email));
+
+        return doctor.getAppointments()
+                .stream()
+                .map(appointment -> modelMapper.map(appointment, AppointmentResponseDto.class))
+                .collect(Collectors.toList());
+    }
 }
