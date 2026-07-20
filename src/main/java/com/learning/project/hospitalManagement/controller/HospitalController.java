@@ -33,8 +33,8 @@ public class HospitalController {
                 .developerName("Prashant Pandey")
                 .email("neeyamashu@gmail.com")
                 .githubUrl("https://github.com/Prashanttp")
-                .linkedinUrl("https://linkedin.com/in/prashanttp")
-                .portfolioUrl("https://prashanttp.github.io")
+                .linkedinUrl("https://www.linkedin.com/in/prashant-pandey-a152b8282/")
+                .portfolioUrl("https://prashanttp.github.io/prashant-resume/")
                 .techStack(List.of(
                         "Java 21",
                         "Spring Boot 3.5.3",
