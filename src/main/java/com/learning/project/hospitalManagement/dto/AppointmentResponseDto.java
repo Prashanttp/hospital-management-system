@@ -9,6 +9,8 @@ public class AppointmentResponseDto {
     private Long id;
     private LocalDateTime appointmentTime;
     private String reason;
+    private String status;
+    private String prescription;
     private DoctorResponseDto doctor;
-//    private PatientResponseDto patient;
+    private PatientResponseDto patient;
 }

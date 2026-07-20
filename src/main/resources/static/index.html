@@ -3,47 +3,51 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hospital Management Dashboard</title>
+  <title>CareSync Pro — Enterprise Hospital & Healthcare Management System</title>
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <!-- Stylesheet -->
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-  <!-- Background effects -->
+  <!-- Dynamic Background Glow Effects -->
   <div class="bg-glow-1"></div>
   <div class="bg-glow-2"></div>
+  <div class="bg-glow-3"></div>
 
-  <!-- AUTH SECTION -->
+  <!-- AUTHENTICATION SECTION -->
   <section id="auth-section" class="auth-container">
     <div class="auth-card">
       <div class="auth-header">
-        <div class="auth-logo">🏥</div>
-        <h1 id="auth-title">Welcome Back</h1>
-        <p id="auth-subtitle">Login to access your Hospital Dashboard</p>
+        <div class="auth-logo-wrapper">
+          <span class="auth-logo">🏥</span>
+          <span class="capstone-badge" id="open-capstone-modal-auth">🎓 Final Year Capstone Project</span>
+        </div>
+        <h1 id="auth-title">CareSync Pro</h1>
+        <p id="auth-subtitle">Healthcare Operations & Clinical Analytics Platform</p>
       </div>
 
       <!-- Login Form -->
       <form id="login-form">
         <div class="form-group">
-          <label for="login-username">Username / Email</label>
-          <input type="text" id="login-username" placeholder="e.g. aarav.sharma@example.com" required>
+          <label for="login-username">Email / Username</label>
+          <input type="text" id="login-username" placeholder="e.g. admin@example.com" required>
         </div>
         <div class="form-group">
           <label for="login-password">Password</label>
           <input type="password" id="login-password" placeholder="••••••••" required>
         </div>
-        <button type="submit" class="btn btn-primary btn-block">Sign In</button>
-        <p class="auth-switch">Don't have an account? <a href="#" id="to-signup">Sign up as a Patient</a></p>
+        <button type="submit" class="btn btn-primary btn-block btn-glow">Sign In to Dashboard &rarr;</button>
+        <p class="auth-switch">Don't have a patient account? <a href="#" id="to-signup">Register New Patient Profile</a></p>
       </form>
 
       <!-- Signup Form (Hidden initially) -->
       <form id="signup-form" class="hidden">
         <div class="form-group">
-          <label for="signup-username">Username (Email)</label>
+          <label for="signup-username">Email Address</label>
           <input type="email" id="signup-username" placeholder="patient@example.com" required>
         </div>
         <div class="form-group">
@@ -82,41 +86,74 @@
           <label for="patient-dob">Date of Birth</label>
           <input type="date" id="patient-dob" required>
         </div>
-        <button type="submit" class="btn btn-primary btn-block">Register Profile</button>
-        <p class="auth-switch">Already have an account? <a href="#" id="to-login">Sign In</a></p>
+        <button type="submit" class="btn btn-primary btn-block btn-glow">Complete Registration</button>
+        <p class="auth-switch">Already registered? <a href="#" id="to-login">Sign In</a></p>
       </form>
       
       <div id="auth-alert" class="alert hidden"></div>
       
+      <!-- Quick Demo Credentials Box -->
       <div class="demo-credentials">
-        <p><strong>💡 Quick Demo Access (Password: <code>password123</code>):</strong></p>
-        <ul>
-          <li>Admin: <code>admin@example.com</code></li>
-          <li>Doctor: <code>rakesh.mehta@example.com</code></li>
-          <li>Patient: <code>aarav.sharma@example.com</code></li>
-        </ul>
+        <p class="demo-title">⚡ <strong>Quick Demo Login (Password: <code>password123</code>):</strong></p>
+        <div class="demo-btn-group">
+          <button type="button" class="btn-demo-fill" data-user="admin@example.com">Admin</button>
+          <button type="button" class="btn-demo-fill" data-user="rakesh.mehta@example.com">Doctor</button>
+          <button type="button" class="btn-demo-fill" data-user="aarav.sharma@example.com">Patient</button>
+        </div>
+      </div>
+
+      <!-- Developer Profile Footer -->
+      <div class="developer-profile-card">
+        <p class="dev-tag">👨‍💻 Created by <strong>Prashant Pandey</strong></p>
+        <div class="social-links">
+          <a href="https://linkedin.com/in/prashanttp" target="_blank" class="social-btn linkedin-btn" title="LinkedIn Profile">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+            LinkedIn
+          </a>
+          <a href="https://github.com/Prashanttp" target="_blank" class="social-btn github-btn" title="GitHub Profile">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.1-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/></svg>
+            GitHub
+          </a>
+          <a href="https://prashanttp.github.io" target="_blank" class="social-btn portfolio-btn" title="Developer Portfolio">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+            Portfolio
+          </a>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- DASHBOARD SECTION -->
   <section id="dashboard-section" class="dashboard-container hidden">
-    <!-- Sidebar / Nav Header -->
+    <!-- Header / Navbar -->
     <header class="dashboard-header">
       <div class="brand">
         <span class="brand-logo">🏥</span>
         <div class="brand-text">
-          <h2>CareSync</h2>
-          <p>Hospital Management System</p>
+          <h2>CareSync Pro</h2>
+          <p>Enterprise Healthcare Management System</p>
         </div>
+        <button class="capstone-badge" id="open-capstone-modal-dash">🎓 Project Architecture</button>
       </div>
-      <div class="user-profile-summary">
-        <div class="user-avatar" id="user-avatar">U</div>
-        <div class="user-info">
-          <span class="user-name" id="profile-name">Loading...</span>
-          <span class="user-role" id="profile-role-badge">PATIENT</span>
+
+      <div class="header-right">
+        <!-- Developer Profile Quick Links -->
+        <div class="header-dev-links">
+          <a href="https://linkedin.com/in/prashanttp" target="_blank" class="head-link" title="LinkedIn">LinkedIn</a>
+          <span class="sep">•</span>
+          <a href="https://github.com/Prashanttp" target="_blank" class="head-link" title="GitHub">GitHub</a>
+          <span class="sep">•</span>
+          <a href="https://prashanttp.github.io" target="_blank" class="head-link" title="Portfolio">Portfolio</a>
         </div>
-        <button id="logout-btn" class="btn btn-secondary btn-sm">Logout</button>
+
+        <div class="user-profile-summary">
+          <div class="user-avatar" id="user-avatar">U</div>
+          <div class="user-info">
+            <span class="user-name" id="profile-name">Loading...</span>
+            <span class="user-role" id="profile-role-badge">PATIENT</span>
+          </div>
+          <button id="logout-btn" class="btn btn-secondary btn-sm">Logout</button>
+        </div>
       </div>
     </header>
 
@@ -131,7 +168,7 @@
             <h3 class="card-title">My Health Profile</h3>
             <div class="profile-details-list">
               <div class="profile-item">
-                <span class="lbl">Email</span>
+                <span class="lbl">Email Address</span>
                 <span class="val" id="p-email">-</span>
               </div>
               <div class="profile-item">
@@ -139,7 +176,7 @@
                 <span class="val" id="p-gender">-</span>
               </div>
               <div class="profile-item">
-                <span class="lbl">Birth Date</span>
+                <span class="lbl">Date of Birth</span>
                 <span class="val" id="p-dob">-</span>
               </div>
               <div class="profile-item">
@@ -148,9 +185,9 @@
               </div>
             </div>
 
-            <!-- Insurance Sub-Card -->
+            <!-- Insurance Card -->
             <div class="sub-card-insurance">
-              <h4 class="sub-title">🛡️ Insurance Details</h4>
+              <h4 class="sub-title">🛡️ Health Insurance Coverage</h4>
               <div id="insurance-view">
                 <div class="profile-item">
                   <span class="lbl">Provider</span>
@@ -167,12 +204,12 @@
               </div>
               
               <!-- Update Insurance Form -->
-              <button id="toggle-insurance-form-btn" class="btn btn-secondary btn-sm btn-block mt-3">Assign / Update Insurance</button>
+              <button id="toggle-insurance-form-btn" class="btn btn-secondary btn-sm btn-block mt-3">Assign / Update Insurance Policy</button>
               
               <form id="insurance-form" class="hidden mt-3">
                 <div class="form-group">
                   <label for="ins-form-provider">Provider Name</label>
-                  <input type="text" id="ins-form-provider" placeholder="HDFC Ergo" required>
+                  <input type="text" id="ins-form-provider" placeholder="HDFC Ergo / Star Health" required>
                 </div>
                 <div class="form-group">
                   <label for="ins-form-policy">Policy Number</label>
@@ -183,7 +220,7 @@
                   <input type="date" id="ins-form-valid" required>
                 </div>
                 <div class="form-row mt-2">
-                  <button type="submit" class="btn btn-primary btn-sm col mr-2">Save</button>
+                  <button type="submit" class="btn btn-primary btn-sm col mr-2">Save Insurance</button>
                   <button type="button" id="cancel-insurance-btn" class="btn btn-secondary btn-sm col">Cancel</button>
                 </div>
               </form>
@@ -193,8 +230,8 @@
           <!-- Appointments Card -->
           <div class="card card-appointments">
             <div class="card-header-actions">
-              <h3 class="card-title">My Scheduled Appointments</h3>
-              <button id="open-appointment-modal-btn" class="btn btn-primary btn-sm">+ Book Appointment</button>
+              <h3 class="card-title">My Appointments & Prescriptions</h3>
+              <button id="open-appointment-modal-btn" class="btn btn-primary btn-sm">+ Book New Consultation</button>
             </div>
             
             <div class="appointments-list" id="patient-appointments-list">
@@ -203,16 +240,16 @@
           </div>
         </div>
 
-        <!-- Appointment Booking Section (Initially Collapsed) -->
+        <!-- Appointment Booking Modal -->
         <div id="appointment-modal" class="modal hidden">
           <div class="modal-content">
             <div class="modal-header">
-              <h3>Schedule New Appointment</h3>
+              <h3>Schedule Consultation Appointment</h3>
               <span class="close-modal" id="close-appointment-modal">&times;</span>
             </div>
             <form id="appointment-form">
               <div class="form-group">
-                <label for="appt-doctor">Select Doctor</label>
+                <label for="appt-doctor">Select Specialist Doctor</label>
                 <select id="appt-doctor" required>
                   <option value="">Loading doctors...</option>
                 </select>
@@ -222,10 +259,10 @@
                 <input type="datetime-local" id="appt-time" required>
               </div>
               <div class="form-group">
-                <label for="appt-reason">Reason for Visit</label>
-                <textarea id="appt-reason" rows="3" placeholder="Describe symptoms or reason..." required></textarea>
+                <label for="appt-reason">Reason for Visit / Symptoms</label>
+                <textarea id="appt-reason" rows="3" placeholder="Describe your symptoms or reason for visit..." required></textarea>
               </div>
-              <button type="submit" class="btn btn-primary btn-block">Schedule Appointment</button>
+              <button type="submit" class="btn btn-primary btn-block btn-glow">Confirm Appointment</button>
             </form>
           </div>
         </div>
@@ -234,9 +271,38 @@
       <!-- ================= DOCTOR VIEW ================= -->
       <div id="panel-doctor" class="role-panel hidden">
         <div class="card">
-          <h3 class="card-title">👨‍⚕️ My Patient Appointments</h3>
+          <div class="card-header-actions">
+            <h3 class="card-title">👨‍⚕️ Clinical Consultation Workspace</h3>
+            <span class="badge badge-info">Manage Patient Consultations</span>
+          </div>
           <div class="appointments-list" id="doctor-appointments-list">
-            <p class="empty-state">No appointments scheduled.</p>
+            <p class="empty-state">No patient appointments scheduled.</p>
+          </div>
+        </div>
+
+        <!-- Consultation & Prescription Modal for Doctors -->
+        <div id="consultation-modal" class="modal hidden">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3>Complete Consultation & Write Prescription</h3>
+              <span class="close-modal" id="close-consultation-modal">&times;</span>
+            </div>
+            <form id="consultation-form">
+              <input type="hidden" id="consult-appt-id">
+              <div class="form-group">
+                <label for="consult-status">Appointment Status</label>
+                <select id="consult-status" required>
+                  <option value="COMPLETED">COMPLETED (Consultation Done)</option>
+                  <option value="SCHEDULED">SCHEDULED (Pending)</option>
+                  <option value="CANCELLED">CANCELLED</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="consult-prescription">Medical Prescription & Notes</label>
+                <textarea id="consult-prescription" rows="4" placeholder="Enter prescribed medications, dosage, diagnostic instructions..." required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary btn-block btn-glow">Save Prescription & Complete</button>
+            </form>
           </div>
         </div>
       </div>
@@ -247,7 +313,7 @@
         <div class="analytics-grid">
           <div class="analytics-card">
             <span class="num" id="stat-patients">0</span>
-            <span class="label">Total Patients</span>
+            <span class="label">Total Registered Patients</span>
           </div>
           <div class="analytics-card">
             <span class="num" id="stat-appointments">0</span>
@@ -255,14 +321,19 @@
           </div>
           <div class="analytics-card">
             <span class="num" id="stat-doctors">0</span>
-            <span class="label">Active Doctors</span>
+            <span class="label">Active Medical Doctors</span>
           </div>
         </div>
 
         <div class="panel-grid-admin">
           <!-- Patients Database -->
           <div class="card card-table">
-            <h3 class="card-title">Patient Database</h3>
+            <div class="card-header-actions">
+              <h3 class="card-title">Patient Management Database</h3>
+              <div class="search-box">
+                <input type="text" id="admin-patient-search" placeholder="🔍 Search patient by name..." class="input-sm">
+              </div>
+            </div>
             <div class="table-responsive">
               <table>
                 <thead>
@@ -292,16 +363,78 @@
 
           <!-- Blood Group Analytics -->
           <div class="card card-analytics">
-            <h3 class="card-title">🩸 Blood Group Distribution</h3>
+            <h3 class="card-title">🩸 Blood Bank & Group Distribution</h3>
             <div class="blood-list" id="blood-groups-list">
               <p class="empty-state">Loading distribution data...</p>
             </div>
           </div>
         </div>
       </div>
-
     </main>
+
+    <!-- Global Footer -->
+    <footer class="dashboard-footer">
+      <div class="footer-container">
+        <p><strong>CareSync Pro</strong> — Final Year Computer Science Capstone Project</p>
+        <p class="footer-sub">Designed & Built with ❤️ by <strong>Prashant Pandey</strong></p>
+        <div class="footer-links">
+          <a href="https://linkedin.com/in/prashanttp" target="_blank">LinkedIn Profile</a>
+          <span>•</span>
+          <a href="https://github.com/Prashanttp" target="_blank">GitHub Repository</a>
+          <span>•</span>
+          <a href="https://prashanttp.github.io" target="_blank">Developer Portfolio</a>
+        </div>
+      </div>
+    </footer>
   </section>
+
+  <!-- CAPSTONE ARCHITECTURE & DEVELOPER INFO MODAL -->
+  <div id="capstone-info-modal" class="modal hidden">
+    <div class="modal-content modal-large">
+      <div class="modal-header">
+        <h3>🎓 Capstone Project Overview & Architecture</h3>
+        <span class="close-modal" id="close-capstone-modal">&times;</span>
+      </div>
+      <div class="capstone-modal-body" id="capstone-modal-body">
+        <div class="project-hero">
+          <h2>CareSync Pro</h2>
+          <p class="subtitle">Enterprise Spring Boot & Data JPA Hospital Management System</p>
+        </div>
+
+        <div class="arch-section">
+          <h4>🚀 Project Overview</h4>
+          <p>CareSync Pro is a full-stack, enterprise-grade healthcare operations platform built as a <strong>Final Year Computer Science Capstone Project</strong>. It provides secure role-based access control (RBAC), patient health record management, clinical doctor consultations with digital prescriptions, and real-time hospital operations analytics.</p>
+        </div>
+
+        <div class="arch-section">
+          <h4>🛠️ Technology Stack</h4>
+          <ul class="tech-stack-pills">
+            <li>Java 21</li>
+            <li>Spring Boot 3.5.3</li>
+            <li>Spring Data JPA / Hibernate</li>
+            <li>Spring Security 6 (Stateless JWT)</li>
+            <li>PostgreSQL Managed Database</li>
+            <li>Lombok & ModelMapper</li>
+            <li>Glassmorphic Web Frontend</li>
+            <li>Docker & Render Cloud Deployment</li>
+          </ul>
+        </div>
+
+        <div class="arch-section">
+          <h4>👨‍💻 Developer Information</h4>
+          <div class="dev-info-box">
+            <p><strong>Developer:</strong> Prashant Pandey</p>
+            <p><strong>Email:</strong> neeyamashu@gmail.com</p>
+            <div class="modal-social-group mt-2">
+              <a href="https://linkedin.com/in/prashanttp" target="_blank" class="btn btn-secondary btn-sm">💼 LinkedIn Profile</a>
+              <a href="https://github.com/Prashanttp" target="_blank" class="btn btn-secondary btn-sm">🐙 GitHub Profile</a>
+              <a href="https://prashanttp.github.io" target="_blank" class="btn btn-secondary btn-sm">🌐 Developer Portfolio</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Script -->
   <script src="js/app.js"></script>

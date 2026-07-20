@@ -17,14 +17,14 @@ VALUES
 ON CONFLICT (email) DO NOTHING;
 
 -- Seed Appointments
-INSERT INTO appointment (id, appointment_time, reason, doctor_id, patient_id)
+INSERT INTO appointment (id, appointment_time, reason, status, prescription, doctor_id, patient_id)
 VALUES
-    (1, '2025-07-01 10:30:00', 'General Checkup', 1, 2),
-    (2, '2025-07-02 11:00:00', 'Skin Rash', 2, 2),
-    (3, '2025-07-03 09:45:00', 'Knee Pain', 3, 3),
-    (4, '2025-07-04 14:00:00', 'Follow-up Visit', 1, 1),
-    (5, '2025-07-05 16:15:00', 'Consultation', 1, 4),
-    (6, '2025-07-06 08:30:00', 'Allergy Treatment', 2, 5)
+    (1, '2025-07-01 10:30:00', 'General Checkup', 'COMPLETED', 'Prescribed Vitamin D3 60k IU weekly and recommended daily 30 min cardio.', 1, 2),
+    (2, '2025-07-02 11:00:00', 'Skin Rash', 'SCHEDULED', NULL, 2, 2),
+    (3, '2025-07-03 09:45:00', 'Knee Pain', 'SCHEDULED', NULL, 3, 3),
+    (4, '2025-07-04 14:00:00', 'Follow-up Visit', 'COMPLETED', 'Blood pressure controlled at 120/80. Continue regular medication.', 1, 1),
+    (5, '2025-07-05 16:15:00', 'Consultation', 'SCHEDULED', NULL, 1, 4),
+    (6, '2025-07-06 08:30:00', 'Allergy Treatment', 'CANCELLED', NULL, 2, 5)
 ON CONFLICT (id) DO NOTHING;
 
 -- Reset Postgres Sequences

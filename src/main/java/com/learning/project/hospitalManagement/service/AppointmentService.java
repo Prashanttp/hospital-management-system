@@ -78,4 +78,24 @@ public class AppointmentService {
                 .map(appointment -> modelMapper.map(appointment, AppointmentResponseDto.class))
                 .collect(Collectors.toList());
     }
+
+    @Transactional
+    public AppointmentResponseDto updateAppointmentStatusAndPrescription(Long appointmentId, String status, String prescription) {
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new EntityNotFoundException("Appointment not found with ID: " + appointmentId));
+
+        if (status != null && !status.isBlank()) {
+            try {
+                appointment.setStatus(com.learning.project.hospitalManagement.entity.type.AppointmentStatus.valueOf(status.toUpperCase()));
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("Invalid status: " + status);
+            }
+        }
+        if (prescription != null) {
+            appointment.setPrescription(prescription);
+        }
+
+        appointment = appointmentRepository.save(appointment);
+        return modelMapper.map(appointment, AppointmentResponseDto.class);
+    }
 }

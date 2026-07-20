@@ -1,5 +1,5 @@
 /* ============================================================
-   CareSync — Hospital Management Dashboard Controller
+   CareSync Pro — Hospital Management Dashboard Controller
    ============================================================ */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let userRole = localStorage.getItem('userRole') || '';
   let currentAdminPage = 0;
   const adminPageSize = 5;
+  let allAdminPatients = [];
 
   // --- API BASE URL ---
   const API_BASE = '/api/v1';
@@ -56,16 +57,55 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Doctor view components
   const doctorAppointmentsList = document.getElementById('doctor-appointments-list');
+  const consultationModal = document.getElementById('consultation-modal');
+  const closeConsultationModal = document.getElementById('close-consultation-modal');
+  const consultationForm = document.getElementById('consultation-form');
+  const consultApptId = document.getElementById('consult-appt-id');
+  const consultStatus = document.getElementById('consult-status');
+  const consultPrescription = document.getElementById('consult-prescription');
 
   // Admin view components
   const statPatients = document.getElementById('stat-patients');
   const statAppointments = document.getElementById('stat-appointments');
   const statDoctors = document.getElementById('stat-doctors');
   const adminPatientsTableBody = document.getElementById('admin-patients-table-body');
+  const adminPatientSearch = document.getElementById('admin-patient-search');
   const prevPageBtn = document.getElementById('prev-page-btn');
   const nextPageBtn = document.getElementById('next-page-btn');
   const pageIndicator = document.getElementById('page-indicator');
   const bloodGroupsList = document.getElementById('blood-groups-list');
+
+  // Capstone Info Modal
+  const capstoneInfoModal = document.getElementById('capstone-info-modal');
+  const openCapstoneAuthBtn = document.getElementById('open-capstone-modal-auth');
+  const openCapstoneDashBtn = document.getElementById('open-capstone-modal-dash');
+  const closeCapstoneModal = document.getElementById('close-capstone-modal');
+
+  // --- DEMO FILL BUTTONS ---
+  document.querySelectorAll('.btn-demo-fill').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const email = e.target.getAttribute('data-user');
+      document.getElementById('login-username').value = email;
+      document.getElementById('login-password').value = 'password123';
+    });
+  });
+
+  // --- CAPSTONE MODAL LISTENERS ---
+  if (openCapstoneAuthBtn) openCapstoneAuthBtn.addEventListener('click', showCapstoneModal);
+  if (openCapstoneDashBtn) openCapstoneDashBtn.addEventListener('click', showCapstoneModal);
+  if (closeCapstoneModal) closeCapstoneModal.addEventListener('click', () => capstoneInfoModal.classList.add('hidden'));
+
+  async function showCapstoneModal() {
+    capstoneInfoModal.classList.remove('hidden');
+    try {
+      const info = await apiCall('/public/project-info');
+      if (info) {
+        console.log('Project Info:', info);
+      }
+    } catch (e) {
+      console.warn('Project info load:', e);
+    }
+  }
 
   // --- INITIAL CHECK ---
   if (token && userId) {
@@ -88,8 +128,8 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     signupForm.classList.add('hidden');
     loginForm.classList.remove('hidden');
-    authTitle.textContent = 'Welcome Back';
-    authSubtitle.textContent = 'Login to access your Hospital Dashboard';
+    authTitle.textContent = 'CareSync Pro';
+    authSubtitle.textContent = 'Healthcare Operations & Clinical Analytics Platform';
     clearAlerts();
   });
 
@@ -143,7 +183,6 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const response = await fetch(url, options);
       if (response.status === 401 || response.status === 403) {
-        // Token expired or access denied
         logout();
         return null;
       }
@@ -157,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error(errorMsg);
       }
 
-      if (response.status === 204) return true; // No Content
+      if (response.status === 204) return true;
       return await response.json();
     } catch (err) {
       console.error('API Error:', err);
@@ -165,7 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Parse JWT token to retrieve roles
+  // Parse JWT token
   function parseJwt(tokenString) {
     try {
       const base64Url = tokenString.split('.')[1];
@@ -199,11 +238,6 @@ document.addEventListener('DOMContentLoaded', () => {
         userId = data.userId;
         localStorage.setItem('token', token);
         localStorage.setItem('userId', userId);
-        
-        // Parse role from token payload
-        const payload = parseJwt(token);
-        console.log('JWT Payload:', payload);
-        
         showDashboard();
       }
     } catch (err) {
@@ -224,14 +258,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const birthDate = document.getElementById('patient-dob').value;
 
     try {
-      // 1. Create auth user credentials
       const signupData = await apiCall('/auth/signup', {
         method: 'POST',
         body: JSON.stringify({ username: email, password })
       });
 
       if (signupData) {
-        // 2. Perform direct login to obtain token
         const loginData = await apiCall('/auth/login', {
           method: 'POST',
           body: JSON.stringify({ username: email, password })
@@ -243,7 +275,6 @@ document.addEventListener('DOMContentLoaded', () => {
           localStorage.setItem('token', token);
           localStorage.setItem('userId', userId);
 
-          // 3. Create domain Patient record inside database using the newly obtained token
           await apiCall('/patients', {
             method: 'POST',
             body: JSON.stringify({ name, email, gender, bloodGroup, birthDate })
@@ -264,10 +295,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!token) return;
 
     const payload = parseJwt(token);
-    // Spring security scopes or subjects
-    const username = payload.sub;
+    const username = payload ? payload.sub : '';
     
-    // Auto-detect role from credentials or standard username prefixes
     if (username.startsWith('admin')) {
       userRole = 'ADMIN';
     } else if (username.includes('doctor') || username.includes('mehta') || username.includes('kapoor') || username.includes('nair')) {
@@ -278,11 +307,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     localStorage.setItem('userRole', userRole);
 
-    // Setup Avatar
-    userAvatar.textContent = username.substring(0, 2).toUpperCase();
+    userAvatar.textContent = username ? username.substring(0, 2).toUpperCase() : 'U';
     profileRoleBadge.textContent = userRole;
 
-    // Toggle panel visibility
     panelPatient.classList.add('hidden');
     panelDoctor.classList.add('hidden');
     panelAdmin.classList.add('hidden');
@@ -311,13 +338,11 @@ document.addEventListener('DOMContentLoaded', () => {
       currentPatientId = patient.id;
       profileName.textContent = patient.name;
       
-      // Load Profile details
       pEmail.textContent = patient.email;
       pGender.textContent = patient.gender;
       pDob.textContent = patient.birthDate;
       pBlood.textContent = patient.bloodGroup.replace('_POSITIVE', '+').replace('_NEGATIVE', '-');
 
-      // Load Insurance Info
       if (patient.insurance) {
         insProvider.textContent = patient.insurance.provider;
         insPolicy.textContent = patient.insurance.policyNumber;
@@ -328,10 +353,7 @@ document.addEventListener('DOMContentLoaded', () => {
         insValid.textContent = 'None';
       }
 
-      // Load appointments
       loadPatientAppointments(patient.appointments);
-
-      // Load doctor listings for scheduling dropdown
       loadDoctorDropdown();
 
     } catch (err) {
@@ -355,28 +377,43 @@ document.addEventListener('DOMContentLoaded', () => {
         timeStyle: 'short'
       });
 
+      const status = appt.status || 'SCHEDULED';
+      const statusBadge = `<span class="badge-status badge-status-${status}">${status}</span>`;
+
+      let prescriptionHtml = '';
+      if (appt.prescription) {
+        prescriptionHtml = `
+          <div class="prescription-box">
+            <h5>💊 Medical Prescription & Doctor Notes</h5>
+            <p>${appt.prescription}</p>
+          </div>
+        `;
+      }
+
       apptEl.innerHTML = `
-        <div class="appt-info">
-          <span class="appt-time">${apptDate}</span>
-          <span class="appt-doctor">👨‍⚕️ ${appt.doctor ? appt.doctor.name : 'Unassigned'}</span>
-          <span class="appt-reason">${appt.reason}</span>
+        <div class="appt-info" style="width: 100%;">
+          <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <span class="appt-time">📅 ${apptDate}</span>
+            ${statusBadge}
+          </div>
+          <span class="appt-doctor">👨‍⚕️ ${appt.doctor ? appt.doctor.name : 'Unassigned'} (${appt.doctor ? appt.doctor.specialization : 'General'})</span>
+          <span class="appt-reason"><strong>Reason:</strong> ${appt.reason}</span>
+          ${prescriptionHtml}
         </div>
-        <span class="tag tag-blood">${appt.doctor ? appt.doctor.specialization : 'General'}</span>
       `;
       patientAppointmentsList.appendChild(apptEl);
     });
   }
 
-  // Load doctors for Booking drop-down
   async function loadDoctorDropdown() {
     try {
       const doctors = await apiCall('/public/doctors');
-      apptDoctorSelect.innerHTML = '<option value="">-- Select a Doctor --</option>';
+      apptDoctorSelect.innerHTML = '<option value="">-- Select Specialist Doctor --</option>';
       if (doctors) {
         doctors.forEach(doc => {
           const opt = document.createElement('option');
           opt.value = doc.id;
-          opt.textContent = `${doc.name} (${doc.specialization})`;
+          opt.textContent = `Dr. ${doc.name} — ${doc.specialization}`;
           apptDoctorSelect.appendChild(opt);
         });
       }
@@ -385,7 +422,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Book Appointment Submit
   appointmentForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const doctorId = document.getElementById('appt-doctor').value;
@@ -405,16 +441,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
       appointmentModal.classList.add('hidden');
       appointmentForm.reset();
-      showAlert(dashboardAlert, 'Appointment successfully booked!', 'success');
-      
-      // Refresh
+      showAlert(dashboardAlert, 'Consultation appointment successfully booked!', 'success');
       determineRoleAndLoadData();
     } catch (err) {
       showAlert(dashboardAlert, 'Failed to book appointment: ' + err.message);
     }
   });
 
-  // Insurance Form Actions
   toggleInsuranceFormBtn.addEventListener('click', () => {
     insuranceForm.classList.remove('hidden');
     toggleInsuranceFormBtn.classList.add('hidden');
@@ -441,29 +474,15 @@ document.addEventListener('DOMContentLoaded', () => {
       insuranceForm.classList.add('hidden');
       toggleInsuranceFormBtn.classList.remove('hidden');
       insuranceForm.reset();
-      showAlert(dashboardAlert, 'Insurance policy successfully assigned!', 'success');
-
-      // Refresh
+      showAlert(dashboardAlert, 'Insurance policy successfully updated!', 'success');
       determineRoleAndLoadData();
     } catch (err) {
       showAlert(dashboardAlert, 'Failed to assign insurance: ' + err.message);
     }
   });
 
-  // Modal actions
-  openAppointmentModalBtn.addEventListener('click', () => {
-    appointmentModal.classList.remove('hidden');
-  });
-
-  closeAppointmentModal.addEventListener('click', () => {
-    appointmentModal.classList.add('hidden');
-  });
-
-  window.addEventListener('click', (e) => {
-    if (e.target === appointmentModal) {
-      appointmentModal.classList.add('hidden');
-    }
-  });
+  openAppointmentModalBtn.addEventListener('click', () => appointmentModal.classList.remove('hidden'));
+  closeAppointmentModal.addEventListener('click', () => appointmentModal.classList.add('hidden'));
 
   // --- DOCTOR VIEWS & ACTIONS ---
 
@@ -471,11 +490,10 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const appointments = await apiCall('/doctors/appointments');
       if (appointments && appointments.length > 0) {
-        profileName.textContent = appointments[0].doctor ? appointments[0].doctor.name : 'Doctor Dashboard';
+        profileName.textContent = appointments[0].doctor ? appointments[0].doctor.name : 'Doctor Workspace';
       } else {
         profileName.textContent = email;
       }
-      
       loadDoctorAppointments(appointments);
     } catch (err) {
       showAlert(dashboardAlert, 'Failed to load doctor appointments: ' + err.message);
@@ -498,14 +516,75 @@ document.addEventListener('DOMContentLoaded', () => {
         timeStyle: 'short'
       });
 
+      const status = appt.status || 'SCHEDULED';
+      const statusBadge = `<span class="badge-status badge-status-${status}">${status}</span>`;
+
+      let prescriptionHtml = '';
+      if (appt.prescription) {
+        prescriptionHtml = `
+          <div class="prescription-box">
+            <h5>💊 Prescription Notes Attached</h5>
+            <p>${appt.prescription}</p>
+          </div>
+        `;
+      }
+
       apptEl.innerHTML = `
-        <div class="appt-info">
-          <span class="appt-time">${apptDate}</span>
+        <div class="appt-info" style="width: 100%;">
+          <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <span class="appt-time">📅 ${apptDate}</span>
+            ${statusBadge}
+          </div>
           <span class="appt-doctor">👤 Patient Reason: ${appt.reason}</span>
-          <span class="appt-reason">Scheduled Visit</span>
+          ${prescriptionHtml}
+          <div style="margin-top: 0.75rem;">
+            <button class="btn btn-primary btn-sm open-consult-btn" data-id="${appt.id}" data-status="${status}" data-prescription="${appt.prescription || ''}">
+              ✍️ Write Prescription & Update Status
+            </button>
+          </div>
         </div>
       `;
       doctorAppointmentsList.appendChild(apptEl);
+    });
+
+    // Attach listeners for doctor consultation modal
+    document.querySelectorAll('.open-consult-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const id = e.target.getAttribute('data-id');
+        const st = e.target.getAttribute('data-status');
+        const rx = e.target.getAttribute('data-prescription');
+
+        consultApptId.value = id;
+        consultStatus.value = st;
+        consultPrescription.value = rx;
+        consultationModal.classList.remove('hidden');
+      });
+    });
+  }
+
+  if (closeConsultationModal) {
+    closeConsultationModal.addEventListener('click', () => consultationModal.classList.add('hidden'));
+  }
+
+  if (consultationForm) {
+    consultationForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const apptId = consultApptId.value;
+      const status = consultStatus.value;
+      const prescription = consultPrescription.value;
+
+      try {
+        await apiCall(`/doctors/appointments/${apptId}`, {
+          method: 'PUT',
+          body: JSON.stringify({ status, prescription })
+        });
+
+        consultationModal.classList.add('hidden');
+        showAlert(dashboardAlert, 'Consultation status & prescription saved successfully!', 'success');
+        determineRoleAndLoadData();
+      } catch (err) {
+        showAlert(dashboardAlert, 'Failed to update consultation: ' + err.message);
+      }
     });
   }
 
@@ -525,7 +604,6 @@ document.addEventListener('DOMContentLoaded', () => {
         statAppointments.textContent = stats.totalAppointments;
         statDoctors.textContent = stats.totalDoctors;
 
-        // Render blood groups distribution
         bloodGroupsList.innerHTML = '';
         if (stats.bloodGroups && stats.bloodGroups.length > 0) {
           stats.bloodGroups.forEach(bg => {
@@ -534,7 +612,7 @@ document.addEventListener('DOMContentLoaded', () => {
             bgEl.className = 'blood-item';
             bgEl.innerHTML = `
               <span class="blood-group-badge tag tag-blood">${bgName}</span>
-              <span class="blood-count">${bg.count} patients</span>
+              <span class="blood-count"><strong>${bg.count}</strong> registered</span>
             `;
             bloodGroupsList.appendChild(bgEl);
           });
@@ -548,56 +626,65 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function loadAdminPatients() {
-    adminPatientsTableBody.innerHTML = '<tr><td colspan="6" class="text-center">Loading patient list...</td></tr>';
+    adminPatientsTableBody.innerHTML = '<tr><td colspan="6" class="text-center">Loading patient records...</td></tr>';
     
     try {
       const data = await apiCall(`/admin/patients?page=${currentAdminPage}&size=${adminPageSize}`);
-      adminPatientsTableBody.innerHTML = '';
-      
-      if (data && data.length > 0) {
-        data.forEach(patient => {
-          const bg = patient.bloodGroup ? patient.bloodGroup.replace('_POSITIVE', '+').replace('_NEGATIVE', '-') : 'N/A';
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td>${patient.id}</td>
-            <td><strong>${patient.name}</strong></td>
-            <td>${patient.gender}</td>
-            <td>${patient.birthDate}</td>
-            <td><span class="tag tag-blood">${bg}</span></td>
-            <td><button class="btn btn-secondary btn-sm delete-patient-btn" data-id="${patient.id}">Delete</button></td>
-          `;
-          adminPatientsTableBody.appendChild(tr);
-        });
-
-        // Add delete button event listeners
-        document.querySelectorAll('.delete-patient-btn').forEach(btn => {
-          btn.addEventListener('click', async (e) => {
-            const id = e.target.getAttribute('data-id');
-            if (confirm(`Are you sure you want to delete patient with ID: ${id}?`)) {
-              try {
-                await apiCall(`/patients/${id}`, { method: 'DELETE' });
-                showAlert(dashboardAlert, `Patient with ID ${id} deleted successfully.`, 'success');
-                // Reload dashboard
-                loadAdminDashboard();
-              } catch (err) {
-                showAlert(dashboardAlert, 'Failed to delete patient: ' + err.message);
-              }
-            }
-          });
-        });
-
-        // Pagination buttons check
-        prevPageBtn.disabled = currentAdminPage === 0;
-        nextPageBtn.disabled = data.length < adminPageSize;
-        pageIndicator.textContent = `Page ${currentAdminPage + 1}`;
-      } else {
-        adminPatientsTableBody.innerHTML = '<tr><td colspan="6" class="text-center empty-state">No patient records found on this page.</td></tr>';
-        nextPageBtn.disabled = true;
-        prevPageBtn.disabled = currentAdminPage === 0;
-      }
+      allAdminPatients = data || [];
+      renderAdminPatients(allAdminPatients);
     } catch (err) {
       adminPatientsTableBody.innerHTML = `<tr><td colspan="6" class="text-center text-danger">Error: ${err.message}</td></tr>`;
     }
+  }
+
+  function renderAdminPatients(patients) {
+    adminPatientsTableBody.innerHTML = '';
+    if (patients && patients.length > 0) {
+      patients.forEach(patient => {
+        const bg = patient.bloodGroup ? patient.bloodGroup.replace('_POSITIVE', '+').replace('_NEGATIVE', '-') : 'N/A';
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${patient.id}</td>
+          <td><strong>${patient.name}</strong></td>
+          <td>${patient.gender}</td>
+          <td>${patient.birthDate}</td>
+          <td><span class="tag tag-blood">${bg}</span></td>
+          <td><button class="btn btn-secondary btn-sm delete-patient-btn" data-id="${patient.id}">Delete</button></td>
+        `;
+        adminPatientsTableBody.appendChild(tr);
+      });
+
+      document.querySelectorAll('.delete-patient-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          const id = e.target.getAttribute('data-id');
+          if (confirm(`Delete patient record ID: ${id}?`)) {
+            try {
+              await apiCall(`/patients/${id}`, { method: 'DELETE' });
+              showAlert(dashboardAlert, `Patient record ${id} deleted.`, 'success');
+              loadAdminDashboard();
+            } catch (err) {
+              showAlert(dashboardAlert, 'Failed to delete patient: ' + err.message);
+            }
+          }
+        });
+      });
+
+      prevPageBtn.disabled = currentAdminPage === 0;
+      nextPageBtn.disabled = patients.length < adminPageSize;
+      pageIndicator.textContent = `Page ${currentAdminPage + 1}`;
+    } else {
+      adminPatientsTableBody.innerHTML = '<tr><td colspan="6" class="text-center empty-state">No patient records found.</td></tr>';
+      nextPageBtn.disabled = true;
+      prevPageBtn.disabled = currentAdminPage === 0;
+    }
+  }
+
+  if (adminPatientSearch) {
+    adminPatientSearch.addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase();
+      const filtered = allAdminPatients.filter(p => p.name.toLowerCase().includes(q) || (p.bloodGroup && p.bloodGroup.toLowerCase().includes(q)));
+      renderAdminPatients(filtered);
+    });
   }
 
   prevPageBtn.addEventListener('click', () => {
@@ -610,5 +697,11 @@ document.addEventListener('DOMContentLoaded', () => {
   nextPageBtn.addEventListener('click', () => {
     currentAdminPage++;
     loadAdminPatients();
+  });
+
+  window.addEventListener('click', (e) => {
+    if (e.target === appointmentModal) appointmentModal.classList.add('hidden');
+    if (e.target === consultationModal) consultationModal.classList.add('hidden');
+    if (e.target === capstoneInfoModal) capstoneInfoModal.classList.add('hidden');
   });
 });

@@ -1,4 +1,5 @@
 package com.learning.project.hospitalManagement.entity;
+import com.learning.project.hospitalManagement.entity.type.AppointmentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -19,6 +20,13 @@ public class Appointment {
 
     @Column(length = 500)
     private String reason;
+
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private AppointmentStatus status = AppointmentStatus.SCHEDULED;
+
+    @Column(length = 1000)
+    private String prescription;
 
     @ManyToOne
     @ToString.Exclude
