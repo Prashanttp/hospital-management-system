@@ -27,8 +27,8 @@ public class HospitalController {
     @GetMapping("/project-info")
     public ResponseEntity<ProjectInfoDto> getProjectInfo() {
         ProjectInfoDto info = ProjectInfoDto.builder()
-                .projectName("CareSync Pro — Final Year Healthcare Operations System")
-                .projectVersion("1.0.0-CAPSTONE")
+                .projectName("CareSync Pro — Enterprise Healthcare Operations System")
+                .projectVersion("1.0.0-PROD")
                 .description("Enterprise Spring Boot & Data JPA Hospital Management System featuring Role-Based Security, Patient Registrations, Doctor Consultation Workspace, and Real-Time Analytics.")
                 .developerName("Prashant Pandey")
                 .email("neeyamashu@gmail.com")
